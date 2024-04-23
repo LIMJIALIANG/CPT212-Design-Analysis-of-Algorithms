@@ -2,54 +2,53 @@ import java.util.Random;
 
 class SimpleMultiplication {
     // Counters for primitive operations
-    static int assignmentCount = 0;
-    static int additionCount = 0;
-    static int multiplicationCount = 0;
+    static int operations = 0;
 
     // Function to multiply two numbers using the simple multiplication algorithm
     public static long multiply(long x, long y) { // x = multiplicand, y = multiplier
         long result = 0;
         long multiplierPosition2 = 1; // not in the loop since it is used to multiply with the partial product and carrier from stage to stage
-        long lastDigitX, extraPartial;
+        long lastDigitX, product;
+        operations += 2;
 
         // Determine the number of digits in the multiplicand for formatting
         int numDigits = String.valueOf(x).length();
+        operations++;
 
-        for (int i = 0; i < numDigits; i++) {
+        operations += 2; //initialization of i and last comparison of i and numDigits
+        for (int i = 0; i < numDigits; i++, operations += 3) {
             long resetX = x; // each time after ONE digit of multiplier multiplies with multiplicand, multiplicand will be reset
             long lastDigitY = y % 10; // last digit of multiplier, until multiplier turns "0", loop stops
             long multiplierPosition1 = 1;
             long partial = 0;
             long carrier = 0;
+            operations += 6;
 
-            for (int j = 0; j < numDigits; j++, resetX /= 10) {
+            operations += 2; //initialization of j and last comparison of j and numDigits
+            for (int j = 0; j < numDigits; j++, resetX /= 10, operations += 5) {
                 lastDigitX = resetX % 10; // take the last digit of multiplicand everytime to multiply with last digit of multiplier
-                partial += lastDigitX * lastDigitY * multiplierPosition1;
-                multiplierPosition1 *= 10; // multiply with 10 evertime partial product formed for the formation of carrier (if any)
+                product = lastDigitX * lastDigitY;
+                partial += (product % 10) * multiplierPosition1;
+                carrier += (product / 10) * multiplierPosition1;
+                multiplierPosition1 *= 10;
 
-                if (partial >= multiplierPosition1) { // if carrier exist
-                    extraPartial = partial / multiplierPosition1;
-                    carrier += extraPartial * (multiplierPosition1/10);
-                    partial -= extraPartial * multiplierPosition1;
-                }
+                operations += 14;
             }
 
             partial *= multiplierPosition2;
             carrier *= multiplierPosition2 * 10;
             result += partial + carrier;
+            operations += 8;
 
             multiplierPosition2 *= 10;
             y /= 10; // multiplier have new last digit for multiplication continuation
+            operations += 4;
 
-            System.out.println("Partial Product for (=" + x + " x " + lastDigitY + ") : " + partial);
-            System.out.println("Carrier for (=" + x + " x " + lastDigitY + ") : " + carrier);
-
-            // Increment counters
-            assignmentCount += 2;
-            multiplicationCount += 2;
-            additionCount += 2;
+            System.out.println("Partial Product for (" + x + " x " + lastDigitY + ") : " + partial);
+            System.out.println("Carrier for (" + x + " x " + lastDigitY + ") : " + carrier);
         }
-        return result;
+        operations++;
+        return result; 
     }
 
     public static void main(String[] args) {
@@ -62,9 +61,7 @@ class SimpleMultiplication {
         long multiplier = generateRandomNumber(n, random); // 80669; // 76171;
 
         // Reset counters
-        assignmentCount = 0;
-        additionCount = 0;
-        multiplicationCount = 0;
+        operations = 0;
 
         // Display the Multiplicand and Multiplier calculated
         System.out.println("Multiplicand: " + multiplicand);
@@ -75,10 +72,7 @@ class SimpleMultiplication {
 
         // Output the result and counters
         System.out.println("\nResult: " + result);
-        System.out.println("\nPrimitive Operations:");
-        System.out.println("Assignments: " + assignmentCount);
-        System.out.println("Additions: " + additionCount);
-        System.out.println("Multiplications: " + multiplicationCount);
+        System.out.println("Number of Primitive Operations: " + operations);
     }
 
     // Function to generate a random number with n digits
