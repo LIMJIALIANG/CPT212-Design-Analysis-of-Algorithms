@@ -1,184 +1,108 @@
-// Importing Random class from java.util packahge
-import java.util.Random;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.math.BigInteger;
 
-// Main class 
 class Karatsuba {
 
     // Counter for primitive operations
     static long counter = 0;
 
-    // Main driver method
-    public static long mult(long x, long y) {
-
-        // Increment counter for comparison operation
-        counter++;
-
-        // Checking only if input is within range
-        if (x < 10 && y < 10) {
-
-            // Increment counter for multiplication operation
+    public static BigInteger mult(BigInteger x, BigInteger y) {
+        // 2 operations (2 comparisons)
+        counter += 2;
+        if (x.compareTo(BigInteger.TEN) < 0 && y.compareTo(BigInteger.TEN) < 0) {
+            // 1 operation (1 return statement)
             counter++;
-
-            // Multiplying the inputs entered
-            return x * y;
+            return x.multiply(y);
         }
 
-        // Increment counter for assignment operations
+        // 4 operations (2 function calls, 2 assignments)
         counter += 4;
-
-        // Declaring variables in order to
-        // Find length of both integer
-        // numbers x and y
         int noOneLength = numLength(x);
         int noTwoLength = numLength(y);
 
-        // Increment counter for max function operation
-        counter++;
-
-        // Finding maximum length from both numbers
-        // using math library max function
+        // 2 operations (1 max function, 1 assignment)
+        counter += 2;
         int maxNumLength = Math.max(noOneLength, noTwoLength);
 
-        // Increment counter for division and modulus operations
-        counter += 2;
-
-        // Rounding up the divided Max length
-        Integer halfMaxNumLength = (maxNumLength / 2) + (maxNumLength % 2);
-
-        // Increment counter for power function operation
-        counter++;
-
-        // Multiplier
-        long maxNumLengthTen = (long) Math.pow(10, halfMaxNumLength);
-
-        // Increment counter for division and modulus operations
+        // 4 operations (1 division, 1 modulus, 1 addition, 1 assignment)
         counter += 4;
+        int halfMaxNumLength = (maxNumLength / 2) + (maxNumLength % 2);
 
-        // Compute the expressions
-        long a = x / maxNumLengthTen;
-        long b = x % maxNumLengthTen;
-        long c = y / maxNumLengthTen;
-        long d = y % maxNumLengthTen;
+        // 2 operations (1 power function, 1 assignment)
+        counter += 2;
+        BigInteger maxNumLengthTen = BigInteger.TEN.pow(halfMaxNumLength);
 
-        // Increment counter for function call operations
-        counter += 3;
+        // 8 operations (2 divisions, 2 modulus, 4 assignments)
+        counter += 8;
+        BigInteger a = x.divide(maxNumLengthTen);
+        BigInteger b = x.mod(maxNumLengthTen);
+        BigInteger c = y.divide(maxNumLengthTen);
+        BigInteger d = y.mod(maxNumLengthTen);
 
-        // Compute all mutilpying variables
-        // needed to get the multiplication
-        long z0 = mult(a, c);
-        long z1 = mult(a + b, c + d);
-        long z2 = mult(b, d);
+        // 8 operations (3 function calls, 2 additions, 3 assignments)
+        counter += 8;
+        BigInteger z0 = mult(a, c);
+        BigInteger z1 = mult(a.add(b), c.add(d));
+        BigInteger z2 = mult(b, d);
 
-        // Increment counter for power function, subtraction, addition, and
-        // multiplication operations
-        counter += 7;
-
-        long ans = (z0 * (long) Math.pow(10, halfMaxNumLength * 2) +
-                ((z1 - z0 - z2) * (long) Math.pow(10, halfMaxNumLength) + z2));
+        // 11 operations (3 multiplications, 2 power functions, 2 additions,
+        // 2 subtractions, 1 assignment, 1 return )
+        counter += 11;
+        BigInteger ans = z0.multiply(maxNumLengthTen.pow(halfMaxNumLength * 2))
+                .add((z1.subtract(z0).subtract(z2)).multiply(maxNumLengthTen.pow(halfMaxNumLength)))
+                .add(z2);
 
         return ans;
     }
 
-    // Method 1
-    // To calculate length of the number
-    public static int numLength(long n) {
+    public static int numLength(BigInteger n) {
+        // 2 operations (1 assignment, 1 comparison)
+        counter += 2;
         int noLen = 0;
-        while (n > 0) {
-            // Increment counter for comparison, increment, division operations
-            counter += 3;
 
+        while (n.compareTo(BigInteger.ZERO) > 0) {
+            // 4 operations per loop (1 addition, 1 division, 2 assignments)
+            counter += 4;
             noLen++;
-            n /= 10;
+            n = n.divide(BigInteger.TEN);
         }
 
-        // Returning length of number n
+        // 1 operation (return statement)
+        counter++;
         return noLen;
     }
 
-    // Method 2
-    // Main driver function
     public static void main(String[] args) {
-        // Showcasing karatsuba multiplication
-
-        // Case 1: Big integer lengths
-        long expectedProduct = 1234 * 5678;
-        long actualProduct = mult(1234, 5678);
-
-        // Printing the expected and corresponding actual product
-        System.out.println("Expected 1 : " + expectedProduct);
-        System.out.println("Actual 1 : " + actualProduct + "\n\n");
-
-        assert (expectedProduct == actualProduct);
-
-        // Print the counter
-        System.out.println("Number of operations: " + counter + "\n\n");
-
-        // Reset the counter
-        counter = 0;
-
-        // Repeat for other test cases...
-        expectedProduct = 102 * 313;
-        actualProduct = mult(102, 313);
-
-        System.out.println("Expected 2 : " + expectedProduct);
-        System.out.println("Actual 2 : " + actualProduct + "\n\n");
-
-        assert (expectedProduct == actualProduct);
-
-        // Print the counter
-        System.out.println("Number of operations: " + counter + "\n\n");
-
-        // Reset the counter
-        counter = 0;
-
-        expectedProduct = 1345 * 63456;
-        actualProduct = mult(1345, 63456);
-
-        System.out.println("Expected 3 : " + expectedProduct);
-        System.out.println("Actual 3 : " + actualProduct + "\n\n");
-
-        assert (expectedProduct == actualProduct);
-
-        // Print the counter
-        System.out.println("Number of operations: " + counter + "\n\n");
-
-        // Reset the counter
-        counter = 0;
-
-        Integer x = null;
-        Integer y = null;
-        Integer MAX_VALUE = 10000;
-
-        // Boe creating an object of random class
-        // inside main() method
-        Random r = new Random();
-
-        for (int i = 0; i < MAX_VALUE; i++) {
-            x = (int) r.nextInt(MAX_VALUE);
-            y = (int) r.nextInt(MAX_VALUE);
-
-            expectedProduct = x * y;
-
-            if (i == 9999) {
-
-                // Prove assertions catch the bad stuff.
-                expectedProduct = 1;
-            }
-            actualProduct = mult(x, y);
-
-            // Again printing the expected and
-            // corresponding actual product
-            System.out.println("Expected: " + expectedProduct);
-            System.out.println("Actual: " + actualProduct + "\n\n");
-
-            assert (expectedProduct == actualProduct);
-
-            // Print the counter
-            System.out.println("Number of operations: " + counter + "\n\n");
-
-            // Reset the counter
-            counter = 0;
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(new FileWriter("Karatsuba.csv"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        // Write the column names to the CSV file
+        pw.println("n,Number of Operations");
+
+        for (int n = 1; n <= 1000; n++) {
+            counter = 0; // Reset the counter
+
+            // Generate two numbers of length n
+            BigInteger num1 = BigInteger.TEN.pow(n - 1);
+            BigInteger num2 = BigInteger.TEN.pow(n).subtract(BigInteger.ONE);
+
+            // Perform the multiplication operation
+            BigInteger product = mult(num1, num2);
+
+            assert (num1.multiply(num2).equals(product));
+
+            // Write the number of operations to the CSV file
+            pw.println(n + "," + counter);
+
+        }
+
+        pw.close();
 
     }
 }
