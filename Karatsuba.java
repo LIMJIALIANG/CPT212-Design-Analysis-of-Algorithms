@@ -1,8 +1,5 @@
 // Importing Random class from java.util packahge
 import java.util.Random;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 // Main class 
 class Karatsuba {
@@ -101,26 +98,11 @@ class Karatsuba {
     // Method 2
     // Main driver function
     public static void main(String[] args) {
-        // Create a PrintWriter object for "Karatsuba.csv"
-        PrintWriter pw = null;
-        try {
-            pw = new PrintWriter(new FileWriter("Karatsuba.csv"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Write the column names to the CSV file
-        pw.println("Number of Operations,n");
-
         // Showcasing karatsuba multiplication
 
         // Case 1: Big integer lengths
         long expectedProduct = 1234 * 5678;
         long actualProduct = mult(1234, 5678);
-
-        // Write the number of operations and the size of the input numbers to the CSV
-        // file
-        pw.println(counter + "," + Math.max((int) (Math.log10(1234) + 1), (int) (Math.log10(5678) + 1)));
 
         // Printing the expected and corresponding actual product
         System.out.println("Expected 1 : " + expectedProduct);
@@ -138,8 +120,6 @@ class Karatsuba {
         expectedProduct = 102 * 313;
         actualProduct = mult(102, 313);
 
-        pw.println(counter + "," + Math.max((int) (Math.log10(102) + 1), (int) (Math.log10(313) + 1)));
-
         System.out.println("Expected 2 : " + expectedProduct);
         System.out.println("Actual 2 : " + actualProduct + "\n\n");
 
@@ -153,8 +133,6 @@ class Karatsuba {
 
         expectedProduct = 1345 * 63456;
         actualProduct = mult(1345, 63456);
-
-        pw.println(counter + "," + Math.max((int) (Math.log10(1345) + 1), (int) (Math.log10(63456) + 1)));
 
         System.out.println("Expected 3 : " + expectedProduct);
         System.out.println("Actual 3 : " + actualProduct + "\n\n");
@@ -188,8 +166,6 @@ class Karatsuba {
             }
             actualProduct = mult(x, y);
 
-            pw.println(counter + "," + Math.max((int) (Math.log10(x) + 1), (int) (Math.log10(y) + 1)));
-
             // Again printing the expected and
             // corresponding actual product
             System.out.println("Expected: " + expectedProduct);
@@ -203,9 +179,6 @@ class Karatsuba {
             // Reset the counter
             counter = 0;
         }
-
-        // Close the PrintWriter
-        pw.close();
 
     }
 }
