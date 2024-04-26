@@ -1,113 +1,138 @@
-import java.util.Scanner;
 import java.util.Random;
+import java.math.BigInteger;
+import java.io.PrintWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 class SimpleMultiplication {
     // Counters for primitive operations
-    static int operations = 0;
+    static BigInteger operations = BigInteger.ZERO;
 
     // Function to multiply two numbers using the simple multiplication algorithm
-    public static long multiply(long x, long y) { // x = multiplicand, y = multiplier
-        long result = 0;
-        long multiplierPosition2 = 1; // not in the loop since it is used to multiply with the partial product and carrier from stage to stage
-        long lastDigitX, product;
-        operations += 2; // 2 assignments
+    public static BigInteger multiply(BigInteger x, BigInteger y) { 
+        BigInteger result = BigInteger.ZERO;
+        BigInteger multiplierPosition2 = BigInteger.ONE;
+        // 2 assignments
+        operations = operations.add(new BigInteger("2"));
 
-        // Determine the number of digits in the multiplicand for formatting
-        long numDigits = String.valueOf(x).length();
-        operations += 3; // 1 assignment, 1 conversion of integer into String and 1 calculation of length of the String
+        BigInteger numDigits = new BigInteger(String.valueOf(x).length() + "");
+        // 1 assignment, 1 conversion of integer into String and 1 calculation of length of the String
+        operations = operations.add(new BigInteger("3"));
 
-        operations += 2; //initialization of i and last comparison of i and numDigits
-        for (int i = 0; i < numDigits; i++, operations += 3) {
-            long resetX = x; // each time after ONE digit of multiplier multiplies with multiplicand, multiplicand will be reset
-            long lastDigitY = y % 10; // last digit of multiplier, until multiplier turns "0", loop stops
-            long multiplierPosition1 = 1;
-            long partial = 0;
-            long carrier = 0;
-            operations += 6; 
+        //initialization of i and last comparison of i and numDigits
+        operations = operations.add(new BigInteger("2"));
+        for (BigInteger i = BigInteger.ZERO; i.compareTo(numDigits) < 0; i = i.add(BigInteger.ONE), operations = operations.add(new BigInteger("3"))) {
+            // each time after ONE digit of multiplier multiplies with multiplicand, multiplicand will be reset
+            BigInteger resetX = x;
+            // last digit of multiplier, until multiplier turns "0", loop stops
+            BigInteger lastDigitY = y.mod(BigInteger.TEN);
+            BigInteger multiplierPosition1 = BigInteger.ONE;
+            BigInteger partial = BigInteger.ZERO;
+            BigInteger carrier = BigInteger.ZERO;
+
             // operations += 3 in for loop is for the increment of i, the comparison of i with numDigits, and the assignment of i after addition in each iteration of the outer loop
             // operations += 6 here means 5 assignments and 1 modulus calculation
+            operations = operations.add(new BigInteger("6"));
 
-            operations += 2; //initialization of j and last comparison of j and numDigits
-            for (int j = 0; j < numDigits; j++, resetX /= 10, operations += 5) {
-                lastDigitX = resetX % 10; // take the last digit of multiplicand everytime to multiply with last digit of multiplier
-                product = lastDigitX * lastDigitY;
-                partial += (product % 10) * multiplierPosition1;
-                carrier += (product / 10) * multiplierPosition1;
-                multiplierPosition1 *= 10;
+            //initialization of j and last comparison of j and numDigits
+            operations = operations.add(new BigInteger("2"));
+            for (BigInteger j = BigInteger.ZERO; j.compareTo(numDigits) < 0; j = j.add(BigInteger.ONE), resetX = resetX.divide(BigInteger.TEN), operations = operations.add(new BigInteger("5"))) {
+                // take the last digit of multiplicand everytime to multiply with last digit of multiplier
+                BigInteger lastDigitX = resetX.mod(BigInteger.TEN);
+                BigInteger product = lastDigitX.multiply(lastDigitY);
+                partial = partial.add((product.mod(BigInteger.TEN)).multiply(multiplierPosition1));
+                carrier = carrier.add((product.divide(BigInteger.TEN)).multiply(multiplierPosition1));
+                multiplierPosition1 = multiplierPosition1.multiply(BigInteger.TEN);
 
-                operations += 14;
                 // operations += 5 in for loop is for the increment of j, the comparison of j with numDigits, the assignment of j after addition, division of resetX with 10 and assignment of resetX
                 // operations += 14 here means 5 assignments, 2 additions, 4 multiplications, 1 division and 2 modulus calculations
+                operations = operations.add(new BigInteger("14"));
             }
 
-            partial *= multiplierPosition2;
-            carrier *= multiplierPosition2 * 10;
-            result += partial + carrier;
-            operations += 8; // 3 assignments, 2 additions and 3 multiplications
+            partial = partial.multiply(multiplierPosition2);
+            carrier = carrier.multiply(multiplierPosition2.multiply(BigInteger.TEN));
+            result = result.add(partial).add(carrier);
+            // 3 assignments, 2 additions and 3 multiplications
+            operations = operations.add(new BigInteger("8"));
 
-            multiplierPosition2 *= 10;
-            y /= 10; // multiplier have new last digit for multiplication continuation
-            operations += 4; // 2 assignments, 1 multiplication and 1 modulus calculation
+            multiplierPosition2 = multiplierPosition2.multiply(BigInteger.TEN);
+            //The multiplier has a new last digit for the multiplication to continue
+            y = y.divide(BigInteger.TEN);
+            // 2 assignments, 1 multiplication and 1 modulus calculation
+            operations = operations.add(new BigInteger("4"));
 
-            System.out.println(String.format("%1$22s", partial) + " | " + "Partial Product for (" + x + " x " + lastDigitY + ")");
-            if (i == numDigits - 1){
-                System.out.println("+" + String.format("%1$21s", carrier) + " | " + "Carrier for (" + x + " x " + lastDigitY + ")");
-            }
-            else{
-                System.out.println(String.format("%1$22s", carrier) + " | " + "Carrier for (" + x + " x " + lastDigitY + ")");
+            if (numDigits.compareTo(new BigInteger("10")) <= 0){
+                System.out.println(String.format("%1$22s", partial) + " | " + "Partial Product for (" + x + " x " + lastDigitY + ")");
+                if (i.equals(numDigits.subtract(BigInteger.ONE))){
+                    System.out.println("+" + String.format("%1$21s", carrier) + " | " + "Carrier for (" + x + " x " + lastDigitY + ")");
+                }
+                else{
+                    System.out.println(String.format("%1$22s", carrier) + " | " + "Carrier for (" + x + " x " + lastDigitY + ")");
+                }
             }
         }
-        operations++; // 1 return statement
-        return result; 
+        // 1 return statement
+        operations = operations.add(BigInteger.ONE);
+        return result;
     }
 
     public static void main(String[] args) {
         // Generate random numbers of n digits
         Random random = new Random();
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(new FileWriter("SimpleMultiplication.csv"));
+            pw.println("n,Number of Operations");
+            for (int n = 1; n <= 1000; n++) {
+                operations = BigInteger.ZERO; // Reset the counter
+                // Generate two numbers of length n
+                BigInteger multiplicand = generateRandomNumber(n, random);
+                BigInteger multiplier = generateRandomNumber(n, random);
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the number of digits between 1 and 10 : ");
-        int n = scanner.nextInt();
+                if (n <= 10){
+                    System.out.println("\nGenerating two numbers, multiplicand and multiplier with " + n + " number of digits...");
+                    System.out.println("Multiplicand: " + multiplicand);
+                    System.out.println("Multiplier: " + multiplier + "\n");
 
-        while (n < 1 || n > 10) {
-            System.out.println("Invalid input. Please enter a number between 1 and 10: ");
-            n = scanner.nextInt();
+                    System.out.println(String.format("%1$22s", multiplicand));
+                    System.out.println("x" + String.format("%1$21s", multiplier));
+                    System.out.println("----------------------");
+                }
+
+                // Perform the multiplication operation
+                BigInteger result = multiply(multiplicand, multiplier);
+                assert (multiplicand.multiply(multiplier).equals(result));
+
+                if (n <= 10){
+                    System.out.println("----------------------");
+                    System.out.println(String.format("%1$22s", result));
+                    System.out.println("----------------------");
+                    System.out.println("----------------------");
+                    // Output the result and counters
+                    System.out.println("\nResult: " + result);
+                    System.out.println("Number of Primitive Operations: " + operations);
+                }
+
+                // Write the number of operations to the CSV file
+                pw.println(n + "," + operations);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (pw != null) {
+                pw.close();
+            }
         }
-
-        System.out.println("You entered: " + n);
-        System.out.println("Generating two numbers, multiplicand and multiplier with " + n + " number of digits...");
-
-        long multiplicand = generateRandomNumber(n, random);
-        long multiplier = generateRandomNumber(n, random);
-
-        // Reset counters
-        operations = 0;
-
-        // Display the Multiplicand and Multiplier calculated
-        System.out.println("Multiplicand: " + multiplicand);
-        System.out.println("Multiplier: " + multiplier + "\n");
-
-        System.out.println(String.format("%1$22s", multiplicand));
-        System.out.println("x" + String.format("%1$21s", multiplier));
-        System.out.println("----------------------");
-
-        // Perform multiplication
-        long result = multiply(multiplicand, multiplier);
-
-        System.out.println("----------------------");
-        System.out.println(String.format("%1$22s", result));
-        System.out.println("----------------------");
-        System.out.println("----------------------");
-
-        // Output the result and counters
-        System.out.println("\nResult: " + result);
-        System.out.println("Number of Primitive Operations: " + operations);
     }
 
     // Function to generate a random number with n digits
-    public static long generateRandomNumber(int n, Random random) {
-        long min = (long) Math.pow(10, n - 1);
-        long max = (long) Math.pow(10, n) - 1;
-        return min + random.nextInt((int) (max - min + 1));
+    public static BigInteger generateRandomNumber(int n, Random random) {
+        // Generate a random number of n digits
+        StringBuilder sb = new StringBuilder(n);
+        for (int i = 0; i < n; i++) {
+            int digit = (i == 0) ? random.nextInt(9) + 1 : random.nextInt(10); // Ensure the first digit is not zero
+            sb.append(digit);
+        }
+        return new BigInteger(sb.toString());
     }
 }
