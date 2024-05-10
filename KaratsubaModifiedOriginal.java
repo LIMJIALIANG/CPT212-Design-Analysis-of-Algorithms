@@ -45,6 +45,10 @@ class KaratsubaModifiedOriginal {
         long z1 = mult(a + b, c + d);
         long z2 = mult(b, d);
 
+        System.out.println("z0: " + z0);
+        System.out.println("z1: " + z1);
+        System.out.println("z2: " + z2);
+
         long ans = (z0 * (long) Math.pow(10, halfMaxNumLength * 2) +
                 ((z1 - z0 - z2) * (long) Math.pow(10, halfMaxNumLength) + z2));
 
