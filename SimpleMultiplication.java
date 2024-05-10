@@ -19,9 +19,9 @@ class SimpleMultiplication {
         // 1 assignment, 1 conversion of integer into String and 1 calculation of length of the String
         operations = operations.add(new BigInteger("3"));
 
-        //initialization of i and last comparison of i and numDigits
-        operations = operations.add(new BigInteger("2"));
-        for (BigInteger i = BigInteger.ZERO; i.compareTo(numDigits) < 0; i = i.add(BigInteger.ONE), operations = operations.add(new BigInteger("3"))) {
+        //initialization of i and last function call and comparison of i and numDigits
+        operations = operations.add(new BigInteger("3"));
+        for (BigInteger i = BigInteger.ZERO; i.compareTo(numDigits) < 0; i = i.add(BigInteger.ONE), operations = operations.add(new BigInteger("4"))) {
             // each time after ONE digit of multiplier multiplies with multiplicand, multiplicand will be reset
             BigInteger resetX = x;
             // last digit of multiplier, until multiplier turns "0", loop stops
@@ -30,13 +30,13 @@ class SimpleMultiplication {
             BigInteger partial = BigInteger.ZERO;
             BigInteger carrier = BigInteger.ZERO;
 
-            // operations += 3 in for loop is for the increment of i, the comparison of i with numDigits, and the assignment of i after addition in each iteration of the outer loop
+            // operations += 4 in for loop is for the increment of i, function call, the comparison of i with numDigits, and the assignment of i after addition in each iteration of the outer loop
             // operations += 6 here means 5 assignments and 1 modulus calculation
             operations = operations.add(new BigInteger("6"));
 
-            //initialization of j and last comparison of j and numDigits
-            operations = operations.add(new BigInteger("2"));
-            for (BigInteger j = BigInteger.ZERO; j.compareTo(numDigits) < 0; j = j.add(BigInteger.ONE), resetX = resetX.divide(BigInteger.TEN), operations = operations.add(new BigInteger("5"))) {
+            //initialization of j and last function call and comparison of j and numDigits
+            operations = operations.add(new BigInteger("3"));
+            for (BigInteger j = BigInteger.ZERO; j.compareTo(numDigits) < 0; j = j.add(BigInteger.ONE), resetX = resetX.divide(BigInteger.TEN), operations = operations.add(new BigInteger("6"))) {
                 // take the last digit of multiplicand everytime to multiply with last digit of multiplier
                 BigInteger lastDigitX = resetX.mod(BigInteger.TEN);
                 BigInteger product = lastDigitX.multiply(lastDigitY);
@@ -44,7 +44,7 @@ class SimpleMultiplication {
                 carrier = carrier.add((product.divide(BigInteger.TEN)).multiply(multiplierPosition1));
                 multiplierPosition1 = multiplierPosition1.multiply(BigInteger.TEN);
 
-                // operations += 5 in for loop is for the increment of j, the comparison of j with numDigits, the assignment of j after addition, division of resetX with 10 and assignment of resetX
+                // operations += 6 in for loop is for the increment of j, function call, the comparison of j with numDigits, the assignment of j after addition, division of resetX with 10 and assignment of resetX
                 // operations += 14 here means 5 assignments, 2 additions, 4 multiplications, 1 division and 2 modulus calculations
                 operations = operations.add(new BigInteger("14"));
             }
@@ -58,7 +58,7 @@ class SimpleMultiplication {
             multiplierPosition2 = multiplierPosition2.multiply(BigInteger.TEN);
             //The multiplier has a new last digit for the multiplication to continue
             y = y.divide(BigInteger.TEN);
-            // 2 assignments, 1 multiplication and 1 modulus calculation
+            // 2 assignments, 1 multiplication and 1 division
             operations = operations.add(new BigInteger("4"));
 
             if (numDigits.compareTo(new BigInteger("10")) <= 0){

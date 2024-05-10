@@ -45,15 +45,14 @@ class Karatsuba {
         // 8 operations (3 function calls, 2 additions, 3 assignments)
         counter += 8;
         BigInteger z0 = mult(a, c);
-        BigInteger z1 = mult(b, c).add(mult(a, d));
-        // BigInteger z1 = mult(a.add(b), c.add(d));
+        BigInteger z1 = mult(a.add(b), c.add(d));
         BigInteger z2 = mult(b, d);
 
         // 10 operations (2 multiplication function call, 2 power function, 2 addition
         // function, 2 subtraction function, 1 assignment, 1 return )
-        counter += 10;
-        BigInteger ans = z0.multiply(maxNumLengthTen.pow(halfMaxNumLength * 2))
-                .add((z1.subtract(z0).subtract(z2)).multiply(maxNumLengthTen.pow(halfMaxNumLength)))
+        counter += 11;
+        BigInteger ans = z0.multiply(BigInteger.TEN.pow(halfMaxNumLength * 2))
+                .add((z1.subtract(z0).subtract(z2)).multiply(BigInteger.TEN.pow(halfMaxNumLength)))
                 .add(z2);
 
         return ans;
@@ -143,22 +142,22 @@ class Karatsuba {
         // Write the column names to the CSV file
         pw.println("n,Number of Operations");
 
-        // for (int n = 1; n <= 1000; n++) {
-        //     counter = 0; // Reset the counter
+        for (int n = 1; n <= 1000; n++) {
+            counter = 0; // Reset the counter
 
-        //     // Generate two numbers of length n
-        //     BigInteger num1 = BigInteger.TEN.pow(n - 1);
-        //     BigInteger num2 = BigInteger.TEN.pow(n).subtract(BigInteger.ONE);
+            // Generate two numbers of length n
+            BigInteger num1 = BigInteger.TEN.pow(n - 1);
+            BigInteger num2 = BigInteger.TEN.pow(n).subtract(BigInteger.ONE);
 
-        //     // Perform the multiplication operation
-        //     BigInteger product = mult(num1, num2);
+            // Perform the multiplication operation
+            BigInteger product = mult(num1, num2);
 
-        //     assert (num1.multiply(num2).equals(product));
+            assert (num1.multiply(num2).equals(product));
 
-        //     // Write the number of operations to the CSV file
-        //     pw.println(n + "," + counter);
+            // Write the number of operations to the CSV file
+            pw.println(n + "," + counter);
 
-        // }
+        }
 
         pw.close();
 
