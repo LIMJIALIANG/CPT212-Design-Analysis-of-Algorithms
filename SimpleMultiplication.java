@@ -6,22 +6,22 @@ import java.io.IOException;
 
 class SimpleMultiplication {
     // Counters for primitive operations
-    static BigInteger operations = BigInteger.ZERO;
+    static long operations = 0;
 
     // Function to multiply two numbers using the simple multiplication algorithm
     public static BigInteger multiply(BigInteger x, BigInteger y) { 
         BigInteger result = BigInteger.ZERO;
         BigInteger multiplierPosition2 = BigInteger.ONE;
         // 2 assignments
-        operations = operations.add(new BigInteger("2"));
+        operations += 2;
 
         BigInteger numDigits = new BigInteger(String.valueOf(x).length() + "");
         // 1 assignment, 1 conversion of integer into String and 1 calculation of length of the String
-        operations = operations.add(new BigInteger("3"));
+        operations += 3;
 
         //initialization of i and last function call and comparison of i and numDigits
-        operations = operations.add(new BigInteger("3"));
-        for (BigInteger i = BigInteger.ZERO; i.compareTo(numDigits) < 0; i = i.add(BigInteger.ONE), operations = operations.add(new BigInteger("4"))) {
+        operations += 3;
+        for (BigInteger i = BigInteger.ZERO; i.compareTo(numDigits) < 0; i = i.add(BigInteger.ONE), operations += 4) {
             // each time after ONE digit of multiplier multiplies with multiplicand, multiplicand will be reset
             BigInteger resetX = x;
             // last digit of multiplier, until multiplier turns "0", loop stops
@@ -32,11 +32,11 @@ class SimpleMultiplication {
 
             // operations += 4 in for loop is for the increment of i, function call, the comparison of i with numDigits, and the assignment of i after addition in each iteration of the outer loop
             // operations += 6 here means 5 assignments and 1 modulus calculation
-            operations = operations.add(new BigInteger("6"));
+            operations += 6;
 
             //initialization of j and last function call and comparison of j and numDigits
-            operations = operations.add(new BigInteger("3"));
-            for (BigInteger j = BigInteger.ZERO; j.compareTo(numDigits) < 0; j = j.add(BigInteger.ONE), resetX = resetX.divide(BigInteger.TEN), operations = operations.add(new BigInteger("6"))) {
+            operations += 3;
+            for (BigInteger j = BigInteger.ZERO; j.compareTo(numDigits) < 0; j = j.add(BigInteger.ONE), resetX = resetX.divide(BigInteger.TEN), operations += 6) {
                 // take the last digit of multiplicand everytime to multiply with last digit of multiplier
                 BigInteger lastDigitX = resetX.mod(BigInteger.TEN);
                 BigInteger product = lastDigitX.multiply(lastDigitY);
@@ -46,20 +46,20 @@ class SimpleMultiplication {
 
                 // operations += 6 in for loop is for the increment of j, function call, the comparison of j with numDigits, the assignment of j after addition, division of resetX with 10 and assignment of resetX
                 // operations += 14 here means 5 assignments, 2 additions, 4 multiplications, 1 division and 2 modulus calculations
-                operations = operations.add(new BigInteger("14"));
+                operations += 14;
             }
 
             partial = partial.multiply(multiplierPosition2);
             carrier = carrier.multiply(multiplierPosition2.multiply(BigInteger.TEN));
             result = result.add(partial).add(carrier);
             // 3 assignments, 2 additions and 3 multiplications
-            operations = operations.add(new BigInteger("8"));
+            operations += 8;
 
             multiplierPosition2 = multiplierPosition2.multiply(BigInteger.TEN);
             //The multiplier has a new last digit for the multiplication to continue
             y = y.divide(BigInteger.TEN);
             // 2 assignments, 1 multiplication and 1 division
-            operations = operations.add(new BigInteger("4"));
+            operations += 4;
 
             if (numDigits.compareTo(new BigInteger("10")) <= 0){
                 System.out.println(String.format("%1$22s", partial) + " | " + "Partial Product for (" + x + " x " + lastDigitY + ")");
@@ -72,7 +72,7 @@ class SimpleMultiplication {
             }
         }
         // 1 return statement
-        operations = operations.add(BigInteger.ONE);
+        operations++;
         return result;
     }
 
@@ -84,7 +84,7 @@ class SimpleMultiplication {
             pw = new PrintWriter(new FileWriter("SimpleMultiplication.csv"));
             pw.println("n,Number of Operations");
             for (int n = 1; n <= 1000; n++) {
-                operations = BigInteger.ZERO; // Reset the counter
+                operations = 0; // Reset the counter
                 // Generate two numbers of length n
                 BigInteger multiplicand = generateRandomNumber(n, random);
                 BigInteger multiplier = generateRandomNumber(n, random);
